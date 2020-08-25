@@ -76,3 +76,12 @@ function process_events(callable $handleEvent)
         }
     }
 }
+
+/**
+ * ファイルからJSONデータを読み込む。
+ */
+function load_json(string $file)
+{
+    $json = file_get_contents($file);
+    return json_decode($json);
+}
