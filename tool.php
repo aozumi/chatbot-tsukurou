@@ -49,6 +49,18 @@ function reply(object $event, string $text)
 }
 
 /**
+ * プッシュメッセージの送信
+ */
+function push(string $to, string $text)
+{
+    $object = [
+        'to' => $to,
+        'messages' => [['type'=>'text', 'text'=>$text]]
+    ];
+    post(PUSH_URL, $object);
+}
+
+/**
  * リクエスト中のイベントごとに$handleEventを呼び出す。
  */
 function process_events(callable $handleEvent)
