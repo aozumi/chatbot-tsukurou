@@ -5,3 +5,6 @@ define('TOKEN', '*** PUT YOUR CHANNEL ACCESS TOKEN HERE ***');
 
 // テスト用ユーザID
 define('USERID_FOR_TEST', '*** PUT YOUR USER ID HERE ***');
+
+// 楽天APIのアプリID
+define('RAKUTEN_APP_ID', '*** PUT YOUR APP ID HERE ***');
