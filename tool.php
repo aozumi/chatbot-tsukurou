@@ -17,7 +17,8 @@ if (file_exists(dirname(__FILE__, 1) . '/config.php')) {
 define('REPLY_URL', 'https://api.line.me/v2/bot/message/reply');
 define('PUSH_URL', 'https://api.line.me/v2/bot/message/push');
 
-function post(string $url, array $object) {
+function post(string $url, array $object)
+{
     $json = json_encode($object);
     debug('output', $json);
 
@@ -38,7 +39,8 @@ function post(string $url, array $object) {
 /**
  * リプライの送信
  */
-function reply(object $event, string $text) {
+function reply(object $event, string $text)
+{
     $object = [
         'replyToken' => $event->replyToken,
         'messages' => [['type'=>'text', 'text'=>$text]]
@@ -49,7 +51,8 @@ function reply(object $event, string $text) {
 /**
  * リクエスト中のイベントごとに$handleEventを呼び出す。
  */
-function process_events(callable $handleEvent) {
+function process_events(callable $handleEvent)
+{
     $input = file_get_contents('php://input');
     debug('input', $input);
     if (!empty($input)) {
