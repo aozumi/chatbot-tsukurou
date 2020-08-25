@@ -1,0 +1,4 @@
+<?php
+
+// チャネルアクセストークン
+define('TOKEN', '*** PUT YOUR CHANNEL ACCESS TOKEN HERE ***');
