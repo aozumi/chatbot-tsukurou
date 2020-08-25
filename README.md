@@ -7,3 +7,9 @@
   - ボットごとの処理はこのクロージャで記述する。
 - チャネルアクセストークン
   - ファイル `config.php` で定義。
+
+## 楽天アプリIDの取得
+
+https://webservice.rakuten.co.jp/ より「新規アプリ登録」に進んでアプリを作成。
+
+アプリケーションIDをconfig.phpで`RAKUTEN_APP_ID`として定義する。
