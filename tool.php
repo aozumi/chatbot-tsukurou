@@ -104,6 +104,14 @@ function load_json(string $file)
 }
 
 /**
+ * ファイルにJSONデータを書き込む。
+ */
+function save_json(string $file, $data)
+{
+    file_put_contents($file, json_encode($data));
+}
+
+/**
  * 自分のURLを返す。
  */
 function myUrl($path = '/')
@@ -117,4 +125,31 @@ function myUrl($path = '/')
     }
     $url .= $path;
     return $url;
+}
+
+/**
+ * ファイルのロックを獲得する。
+ */
+function lock_file(string $file)
+{
+    $fp = fopen($file, 'c');
+    if (!$fp) {
+        throw new Exception("failed to lock file (fopen)");
+    }
+    if (!flock($fp, LOCK_EX)) {
+        throw new Exception("failed to lock file (flock)");
+    }
+
+    return $fp;
+}
+
+/**
+ * ファイルのロックを解放する。
+ */
+function unlock_file($fp)
+{
+    if (!flock($fp, LOCK_UN)) {
+        debug("failed to unlock", "flock");
+    }
+    fclose($fp);
 }
