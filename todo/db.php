@@ -51,3 +51,25 @@ function get_todos(object $db, string $user)
     prepare_user($db, $user);
     return $db->{$user};
 }
+
+function minutes_value($hour, $minute)
+{
+    return $hour * 60 + $minute;
+}
+
+function recent_todos(object $db, int $minutes = 5)
+{
+    $tm = localtime();
+    $hour = $tm[2];
+    $minute = $tm[1];
+    foreach ($db as $user => $list) {
+        $list = array_filter($list, function ($todo) use ($hour, $minute, $minutes) {
+            $diff = (minutes_value($todo->hour, $todo->minute) - minutes_value($hour, $minute) + 24 * 60) % (24 * 60);
+            return ($diff <= $minutes);
+        });
+        if (empty($list)) {
+            continue;
+        }
+        yield [$user, array_values($list)];
+    }
+}
