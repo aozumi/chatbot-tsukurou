@@ -1,6 +1,10 @@
 <?php
 // チャットボット共通ファイル
 
+if (file_exists(dirname(__FILE__, 1) . '/config.php')) {
+    require_once(dirname(__FILE__, 1) . '/config.php');
+}
+
 define('DEBUG', '/tmp/debug.txt');
 if (file_exists(DEBUG)) {
     unlink(DEBUG);
@@ -10,9 +14,6 @@ function debug(string $title, string $text) {
     file_put_contents(DEBUG, '['.$title.']'."\n".$text."\n\n", FILE_APPEND);
 }
 
-if (file_exists(dirname(__FILE__, 1) . '/config.php')) {
-    require_once(dirname(__FILE__, 1) . '/config.php');
-}
 // エンドポイントURL
 define('REPLY_URL', 'https://api.line.me/v2/bot/message/reply');
 define('PUSH_URL', 'https://api.line.me/v2/bot/message/push');
