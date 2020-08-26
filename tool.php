@@ -5,7 +5,7 @@ if (file_exists(dirname(__FILE__, 1) . '/config.php')) {
     require_once(dirname(__FILE__, 1) . '/config.php');
 }
 
-define('DEBUG', DATA_DIR . '/debug.txt');
+define('DEBUG', DATA_DIR . '/' . (defined('DEBUG_FILENAME') ? DEBUG_FILENAME : 'debug.txt'));
 if (file_exists(DEBUG)) {
     unlink(DEBUG);
 }
@@ -30,6 +30,7 @@ function post(string $url, array $object)
         'Content-Type: application/json',
         'Authorization: Bearer ' . TOKEN
     ]);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
     $result = curl_exec($curl);
     debug('post result', $result);
