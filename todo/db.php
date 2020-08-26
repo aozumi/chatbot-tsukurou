@@ -39,6 +39,18 @@ function add_todo(object $db, string $user, int $hour, int $minute, string $titl
     $db->{$user}[] = $item;
 }
 
+function remove_todos(object $db, string $user, array $todos)
+{
+    prepare_user($db, $user);
+    $list = &$db->{$user};
+    $list = array_values(array_filter($list, function ($x) use ($todos) {
+        return !in_array($x, $todos);
+    }));
+    if (empty($list)) {
+        unset($db->{$user});
+    }
+}
+
 function clear_todos(object $db, string $user)
 {
     debug('clear', $user);
