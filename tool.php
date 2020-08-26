@@ -5,7 +5,7 @@ if (file_exists(dirname(__FILE__, 1) . '/config.php')) {
     require_once(dirname(__FILE__, 1) . '/config.php');
 }
 
-define('DEBUG', DATA_DIR . '/debug.txt');
+define('DEBUG', DATA_DIR . '/' . (defined('DEBUG_FILENAME') ? DEBUG_FILENAME : 'debug.txt'));
 if (file_exists(DEBUG)) {
     unlink(DEBUG);
 }
