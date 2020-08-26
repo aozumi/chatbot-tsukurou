@@ -104,6 +104,14 @@ function load_json(string $file)
 }
 
 /**
+ * ファイルにJSONデータを書き込む。
+ */
+function save_json(string $file, $data)
+{
+    file_put_contents($file, json_encode($data));
+}
+
+/**
  * 自分のURLを返す。
  */
 function myUrl($path = '/')
