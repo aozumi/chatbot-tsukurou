@@ -61,6 +61,23 @@ function push(string $to, string $text)
 }
 
 /**
+ * リプライとして画像を送信
+ */
+function reply_image(object $event, string $originalUrl, string $previewUrl)
+{
+    $object = [
+        'replyToken' => $event->replyToken,
+        'messages' => [[
+            'type' => 'image',
+            'originalContentUrl' => $originalUrl,
+            'previewImageUrl' => $previewUrl
+        ]]
+    ];
+
+    post(REPLY_URL, $object);
+}
+
+/**
  * リクエスト中のイベントごとに$handleEventを呼び出す。
  */
 function process_events(callable $handleEvent)
@@ -84,4 +101,20 @@ function load_json(string $file)
 {
     $json = file_get_contents($file);
     return json_decode($json);
+}
+
+/**
+ * 自分のURLを返す。
+ */
+function myUrl($path = '/')
+{
+    $https = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on';
+    $port = $_SERVER['SERVER_PORT'];
+    $url = ($https ? 'https://'  : 'http://');
+    $url .= $_SERVER['SERVER_NAME'];
+    if ($port != ($https ? '443' : '80')) {
+        $url .= ':' . $port;
+    }
+    $url .= $path;
+    return $url;
 }
