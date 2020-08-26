@@ -13,6 +13,8 @@ LINEボットをPHPで実装。
  - 送信された位置情報を文字で返すボット (location.php)
  - 過去に送られたメッセージをランダムに選んで応答するボット (mimic/mimic.php)
  - 買い物リストを作るボット (shopping.php)
+ - 予定リストを作るボット (todo/todo.php)
+ - cronで実行され、直近の予定をプッシュ通知するプログラム (todo/todo-push.php)
 
 ## 変更点
 - フレームワーク
