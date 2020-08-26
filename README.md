@@ -12,6 +12,7 @@ LINEボットをPHPで実装。
  - Googleで画像検索するボット (image/image2.php)
  - 送信された位置情報を文字で返すボット (location.php)
  - 過去に送られたメッセージをランダムに選んで応答するボット (mimic/mimic.php)
+ - 買い物リストを作るボット (shopping.php)
 
 ## 変更点
 - フレームワーク
