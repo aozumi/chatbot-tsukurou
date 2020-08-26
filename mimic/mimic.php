@@ -8,10 +8,10 @@ require_once(dirname(__FILE__, 2) . '/tool.php');
 define('MESSAGES_LIMIT', 100);
 
 // 発言を記録するファイル
-define('MESSAGES_FILE', '/tmp/messages.txt');
+define('MESSAGES_FILE', DATA_DIR . '/messages.txt');
 
 // ロックファイル
-define('LOCK_FILE', '/tmp/mimic.lock');
+define('LOCK_FILE', DATA_DIR . '/mimic.lock');
 
 function add_message(object $messages, string $user, string $newMessage)
 {

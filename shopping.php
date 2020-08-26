@@ -8,10 +8,10 @@
 require_once(dirname(__FILE__) . '/tool.php');
 
 // データを記録するファイル
-define('DB_FILE', '/tmp/shopping.json');
+define('DB_FILE', DATA_DIR . '/shopping.json');
 
 // ロックファイル
-define('LOCK_FILE', '/tmp/shopping.lock');
+define('LOCK_FILE', DATA_DIR . '/shopping.lock');
 
 function load_db()
 {
