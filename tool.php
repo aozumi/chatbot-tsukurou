@@ -126,3 +126,30 @@ function myUrl($path = '/')
     $url .= $path;
     return $url;
 }
+
+/**
+ * ファイルのロックを獲得する。
+ */
+function lock_file(string $file)
+{
+    $fp = fopen($file, 'c');
+    if (!$fp) {
+        throw new Exception("failed to lock file (fopen)");
+    }
+    if (!flock($fp, LOCK_EX)) {
+        throw new Exception("failed to lock file (flock)");
+    }
+
+    return $fp;
+}
+
+/**
+ * ファイルのロックを解放する。
+ */
+function unlock_file($fp)
+{
+    if (!flock($fp, LOCK_UN)) {
+        debug("failed to unlock", "flock");
+    }
+    fclose($fp);
+}
