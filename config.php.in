@@ -8,3 +8,9 @@ define('USERID_FOR_TEST', '*** PUT YOUR USER ID HERE ***');
 
 // 楽天APIのアプリID
 define('RAKUTEN_APP_ID', '*** PUT YOUR APP ID HERE ***');
+
+// Google Custom Search APIキー
+define('GOOGLE_CUSTOM_SEARCH_API_KEY', '*** PUT YOUR API KEY HERE ***');
+
+// Google カスタム検索エンジンID
+define('GOOGLE_CUSTOM_SEARCH_ENGINE_ID', '*** PUT YOUR SEARCH ENGINE ID HERE ***');
