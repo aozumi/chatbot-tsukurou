@@ -30,6 +30,7 @@ function post(string $url, array $object)
         'Content-Type: application/json',
         'Authorization: Bearer ' . TOKEN
     ]);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
     $result = curl_exec($curl);
     debug('post result', $result);
