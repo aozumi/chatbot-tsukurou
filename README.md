@@ -10,6 +10,7 @@ LINEボットをPHPで実装。
  - 用意された文章のリストからランダムに選んで応答するボット (promote/promote.php)
  - 楽天で商品検索するボット (price/pricebot.php)
  - Googleで画像検索するボット (image/image2.php)
+ - 送信された位置情報を文字で返すボット (location.php)
 
 ## 変更点
 - フレームワーク
