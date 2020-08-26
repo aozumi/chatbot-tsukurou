@@ -153,3 +153,16 @@ function unlock_file($fp)
     }
     fclose($fp);
 }
+
+/**
+ * ファイルをロックして渡されたサンクを実行する。
+ */
+function with_lock(string $file, callable $thunk)
+{
+    $lock = lock_file($file);
+    try {
+        return call_user_func($thunk);
+    } finally {
+        unlock_file($lock);
+    }
+}
