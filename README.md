@@ -15,6 +15,8 @@ LINEボットをPHPで実装。
  - 買い物リストを作るボット (shopping.php)
  - 予定リストを作るボット (todo/todo.php)
  - cronで実行され、直近の予定をプッシュ通知するプログラム (todo/todo-push.php)
+ - ボタンを表示する例 (buttons.php)
+ - おみくじボット (omikuji.php)
 
 ## 変更点
 - フレームワーク
