@@ -86,6 +86,14 @@ function process_events(callable $handleEvent)
 {
     $input = file_get_contents('php://input');
     debug('input', $input);
+    $signature = get_line_signature();
+    debug('signature', $signature);
+    if (!validate_signature(CHANNEL_SECRET, $signature, $input)) {
+        debug('signature validation', 'FAILED ' . $signature);
+        return;
+    }
+    debug('signature validation', 'OK');
+
     if (!empty($input)) {
         $events = json_decode($input)->events;
         debug("events", count($events));
@@ -167,4 +175,22 @@ function with_lock(string $file, callable $thunk)
     } finally {
         unlock_file($lock);
     }
+}
+
+/**
+ * X-Line-Sigature ヘッダの値を返す。
+ */
+function get_line_signature()
+{
+    $headers = apache_request_headers();
+    return $headers['X-Line-Signature'];
+}
+
+/**
+ * HTTPリクエストの署名を検証する。
+ */
+function validate_signature(string $secret, string $signature, string $body)
+{
+    $hash = hash_hmac('sha256', $body, $secret, true);
+    return $signature == base64_encode($hash);
 }
