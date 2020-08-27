@@ -3,6 +3,9 @@
 // チャネルアクセストークン
 define('TOKEN', '*** PUT YOUR CHANNEL ACCESS TOKEN HERE ***');
 
+// チャネルシークレット
+define('CHANNEL_SECRET', '*** PUT YOUR CHANNEL SECRET HERE ***');
+
 // テスト用ユーザID
 define('USERID_FOR_TEST', '*** PUT YOUR USER ID HERE ***');
 
