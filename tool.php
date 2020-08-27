@@ -51,6 +51,14 @@ function reply(object $event, string $text)
 }
 
 /**
+ * リプライの送信(オブジェクト全体を与える)
+ */
+function reply_object(object $event, $object)
+{
+    post(REPLY_URL, $object);
+}
+
+/**
  * プッシュメッセージの送信
  */
 function push(string $to, string $text)
