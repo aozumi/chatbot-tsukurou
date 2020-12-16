@@ -51,6 +51,17 @@ function handle_clear_list(object $event, string $user)
     reply($event, '予定を全て削除しました。');
 }
 
+function handle_help(object $event)
+{
+    $help = (
+        "予定リスト\n  予定の一覧を表示します\n"
+        . "XX:XX 予定内容\n  予定を登録します\n"
+        . "予定クリア\n  予定を全て消去します\n"
+        . "ヘルプ\n  このメッセージを表示します"
+    );
+    reply($event, $help);
+}
+
 process_events(function($event) {
     if (!($event->type == 'message' && $event->message->type == 'text')) {
         return;
@@ -77,5 +88,8 @@ process_events(function($event) {
     } else if (preg_match('/予定リスト/u', $text)) {
         debug('show list', '');
         handle_show_list($event, $user);
+    } else if (preg_match('/(ヘルプ|help)/u', $text)) {
+        debug('show help', '');
+        handle_help($event);
     }
 });
