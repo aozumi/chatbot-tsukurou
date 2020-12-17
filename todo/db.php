@@ -43,7 +43,7 @@ function remove_todos(object $db, string $user, array $todos)
 {
     prepare_user($db, $user);
     $list = &$db->{$user};
-    $list = array_values(array_filter($list, function ($x) use ($todos) {
+    $db->{$user} = array_values(array_filter($list, function ($x) use ($todos) {
         return !in_array($x, $todos);
     }));
     if (empty($list)) {
