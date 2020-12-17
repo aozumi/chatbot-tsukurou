@@ -47,12 +47,14 @@ function handle_show_list(object $event, string $user)
  * 指定された時刻の予定を削除する。
  * $title が与えられた場合はそれにマッチするものを削除する。
  */
-function handle_remove_todo(object $event, string $user, int $hour, int $minute, string $title)
+function handle_remove_todo(object $event, string $user, int $hour, int $minute,
+                            string $title, string $date)
 {
     $to_remove = [];
-    with_lock(LOCK_FILE, function () use (&$to_remove, $user, $hour, $minute, $title) {
+    $everyday = $date == "毎日";
+    with_lock(LOCK_FILE, function () use (&$to_remove, $everyday, $user, $hour, $minute, $title) {
         $db = load_db();
-        $to_remove = find_todos($db, $user, $hour, $minute, $title);
+        $to_remove = find_todos($db, $user, $hour, $minute, $title, $everyday);
         if (!empty($to_remove)) {
             remove_todos($db, $user, $to_remove);
             save_db($db);
@@ -86,7 +88,7 @@ function handle_help(object $event)
         "予定リスト\n  予定の一覧を表示します\n"
         . "[毎日]XX:XX 予定内容\n  予定を登録します\n"
         . "予定クリア\n  予定を全て消去します\n"
-        . "キャンセル XX:XX [キー]\n  予定を削除します\n"
+        . "キャンセル [毎日]XX:XX [キー]\n  予定を削除します\n"
         . "ヘルプ\n  このメッセージを表示します"
     );
     reply($event, $help);
@@ -115,10 +117,10 @@ process_events(function($event) {
     } else if (preg_match('/^予定(リスト.*)?クリア/u', $text)) {
         debug('clear list', '');
         handle_clear_list($event, $user);
-    } else if (preg_match('/^キャンセル ([0-9]+):([0-9]+) *(.*)/u', $text, $matches)) {
-        [, $hour, $minute, $title] = $matches;
-        debug('remove todo', "{$hour}:{$minute} {$title}");
-        handle_remove_todo($event, $user, (int)$hour, (int)$minute, trim($title));
+    } else if (preg_match('/^キャンセル *(毎日)? *([0-9]+):([0-9]+) *(.*)/u', $text, $matches)) {
+        [, $date, $hour, $minute, $title] = $matches;
+        debug('remove todo', "{$date} {$hour}:{$minute} {$title}");
+        handle_remove_todo($event, $user, (int)$hour, (int)$minute, trim($title), $date);
     } else if (preg_match('/予定リスト/u', $text)) {
         debug('show list', '');
         handle_show_list($event, $user);

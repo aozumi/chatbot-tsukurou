@@ -91,9 +91,9 @@ function recent_todos(object $db, int $minutes = 5)
  * 条件にマッチする予定のリストを返す。
  * $titleが空文字列でない場合、タイトルに$titleを含む予定のみを返す。
  */
-function find_todos(object $db, string $user, int $hour, int $minute, string $title) {
-    return array_filter(get_todos($db, $user), function ($todo) use ($hour, $minute, $title) {
-        if ($todo->hour == $hour && $todo->minute == $minute) {
+function find_todos(object $db, string $user, int $hour, int $minute, string $title, bool $everyday) {
+    return array_filter(get_todos($db, $user), function ($todo) use ($hour, $minute, $title, $everyday) {
+        if ($todo->hour == $hour && $todo->minute == $minute && $todo->everyday == $everyday) {
             return ($title == "" || stripos($todo->title, $title) !== false);
         } else {
             return false;
