@@ -23,5 +23,6 @@ function sort_todos(array $list)
 
 function format_todo(object $todo)
 {
-    return sprintf('%02d:%02d %s', $todo->hour, $todo->minute, $todo->title);
+    $mark = ($todo->everyday ? "*" : "");
+    return sprintf('%02d:%02d%s %s', $todo->hour, $todo->minute, $mark, $todo->title);
 }
