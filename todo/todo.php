@@ -10,11 +10,13 @@ require_once(dirname(__FILE__) . '/utils.php');
 
 date_default_timezone_set('Asia/Tokyo');
 
-function handle_add_todo(object $event, string $user, int $hour, int $minute, string $title)
+function handle_add_todo(object $event, string $user, int $hour, int $minute,
+                         string $title, string $date)
 {
-    with_lock(LOCK_FILE, function () use ($user, $hour, $minute, $title) {
+    with_lock(LOCK_FILE, function () use ($user, $hour, $minute, $title, $date) {
         $db = load_db();
-        add_todo($db, $user, $hour, $minute, $title);
+        $everyday = $date == "毎日";
+        add_todo($db, $user, $hour, $minute, $title, $everyday);
         save_db($db);
     });
 
@@ -82,7 +84,7 @@ function handle_help(object $event)
 {
     $help = (
         "予定リスト\n  予定の一覧を表示します\n"
-        . "XX:XX 予定内容\n  予定を登録します\n"
+        . "[毎日]XX:XX 予定内容\n  予定を登録します\n"
         . "予定クリア\n  予定を全て消去します\n"
         . "キャンセル XX:XX [キー]\n  予定を削除します\n"
         . "ヘルプ\n  このメッセージを表示します"
@@ -106,10 +108,10 @@ process_events(function($event) {
     }
 
     $matches = [];
-    if (preg_match('/^([0-9]+):([0-9]+) *(.+)/u', $text, $matches)) {
-        [, $hour, $minute, $title] = $matches;
-        debug('add todo', '[' . $hour . ':' . $minute . '] ' . $title);
-        handle_add_todo($event, $user, (int)$hour, (int)$minute, trim($title));
+    if (preg_match('/^(毎日)? *([0-9]+):([0-9]+) *(.+)/u', $text, $matches)) {
+        [, $date, $hour, $minute, $title] = $matches;
+        debug('add todo', "{$date} [{$hour}:{$minute}] {$title}");
+        handle_add_todo($event, $user, (int)$hour, (int)$minute, trim($title), $date);
     } else if (preg_match('/^予定(リスト.*)?クリア/u', $text)) {
         debug('clear list', '');
         handle_clear_list($event, $user);

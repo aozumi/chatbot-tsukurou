@@ -28,13 +28,14 @@ function prepare_user(object $db, string $user)
     }
 }
 
-function add_todo(object $db, string $user, int $hour, int $minute, string $title)
+function add_todo(object $db, string $user, int $hour, int $minute, string $title, bool $everyday)
 {
     prepare_user($db, $user);
     $item = [
         'hour' => $hour % 24,
         'minute' => $minute % 60,
-        'title' => $title
+        'title' => $title,
+        'everyday' => $everyday
     ];
     $db->{$user}[] = $item;
 }
