@@ -32,8 +32,8 @@ function add_todo(object $db, string $user, int $hour, int $minute, string $titl
 {
     prepare_user($db, $user);
     $item = [
-        'hour' => $hour,
-        'minute' => $minute,
+        'hour' => $hour % 24,
+        'minute' => $minute % 60,
         'title' => $title
     ];
     $db->{$user}[] = $item;
