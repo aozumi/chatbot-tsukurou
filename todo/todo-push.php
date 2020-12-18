@@ -26,24 +26,35 @@ debug('RECENT_MINUTES', RECENT_MINUTES);
 $db = with_lock(LOCK_FILE, function () {
     return load_db();
 });
-$remove = [];
+$remove = []; // 通知後に削除するアイテム(ユーザごと)
 foreach (recent_todos($db, RECENT_MINUTES) as $index => [$user, $list]) {
     debug('user with todos', $user);
     debug('number of items', count($list));
 
     $list = sort_todos($list);
+
+    // 通知メッセージ作成
     $text = '予定の時刻です:';
     foreach ($list as $todo) {
         $text .= "\n" . format_todo($todo);
     }
+
+    // 削除するアイテム
+    $to_remove = array_filter($list, function ($todo) {
+        return ! $todo->everyday;
+    });
+
+    // 通知の送信に成功したら削除対象を登録
     try {
         debug('push', $text);
         push($user, $text);
-        $remove[$user] = $list;
+        $remove[$user] = $to_remove;
     } catch (Exception $e) {
         debug('exception', $e->getMessage());
     }
 }
+
+// 不要になったアイテムを削除する
 if (!empty($remove)) {
     with_lock(LOCK_FILE, function () use ($remove) {
         $db = load_db();
