@@ -89,11 +89,18 @@ function minutes_value($hour, $minute)
 
 function recent_todos(object $db, int $minutes = 5)
 {
+    $timestamp_now = time();
     $tm = localtime();
     $hour = $tm[2];
     $minute = $tm[1];
     foreach ($db as $user => $list) {
-        $list = array_filter($list, function ($todo) use ($hour, $minute, $minutes) {
+        $list = array_filter($list, function ($todo) use ($timestamp_now, $hour, $minute, $minutes) {
+            if (isset($todo->last_notified)) {
+                if ($timestamp_now - $todo->last_notified <= 60 * ($minutes + 5)) {  // $minutes + 5分以内に通知した予定はスキップ
+                    return false;
+                }
+            }
+
             $diff = (minutes_value($todo->hour, $todo->minute) - minutes_value($hour, $minute) + 24 * 60) % (24 * 60);
             return ($diff <= $minutes);
         });
