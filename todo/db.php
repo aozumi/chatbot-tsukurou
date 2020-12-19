@@ -18,7 +18,18 @@ function load_db()
 
 function save_db(object $db)
 {
-    save_json(DB_FILE, $db);
+    $tmpfile = tempnam(dirname(DB_FILE), 'todo.json.');
+    debug('save_db:tmpfile', $tmpfile);
+    try {
+        save_json($tmpfile, $db);
+        chmod($tmpfile, 0644);
+        rename($tmpfile, DB_FILE);
+    } catch (Exception $e) {
+        debug('save error', $e->getMessage());
+        if (is_file($tmpfile)) {
+            unlink($tmpfile);
+        }
+    }
 }
 
 function prepare_user(object $db, string $user)
@@ -38,6 +49,23 @@ function add_todo(object $db, string $user, int $hour, int $minute, string $titl
         'everyday' => $everyday
     ];
     $db->{$user}[] = $item;
+}
+
+/**
+ * $todosに含まれるアイテムのlast_notifiedに現在時刻のunix timeを記録する。
+ */
+function update_todos_last_notified(object $db, string $user, array $todos)
+{
+    $timestamp = time();
+    if (!isset($db->{$user})) {
+        return;
+    }
+    foreach ($db->{$user} as $todo) {
+        if (in_array($todo, $todos)) {
+            // $todo は object (JSONをデシリアライズするとそうなる)
+            $todo->last_notified = $timestamp;
+        }
+    }
 }
 
 function remove_todos(object $db, string $user, array $todos)
@@ -72,11 +100,18 @@ function minutes_value($hour, $minute)
 
 function recent_todos(object $db, int $minutes = 5)
 {
+    $timestamp_now = time();
     $tm = localtime();
     $hour = $tm[2];
     $minute = $tm[1];
     foreach ($db as $user => $list) {
-        $list = array_filter($list, function ($todo) use ($hour, $minute, $minutes) {
+        $list = array_filter($list, function ($todo) use ($timestamp_now, $hour, $minute, $minutes) {
+            if (isset($todo->last_notified)) {
+                if ($timestamp_now - $todo->last_notified <= 60 * ($minutes + 5)) {  // $minutes + 5分以内に通知した予定はスキップ
+                    return false;
+                }
+            }
+
             $diff = (minutes_value($todo->hour, $todo->minute) - minutes_value($hour, $minute) + 24 * 60) % (24 * 60);
             return ($diff <= $minutes);
         });
