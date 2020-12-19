@@ -27,6 +27,7 @@ $db = with_lock(LOCK_FILE, function () {
     return load_db();
 });
 $remove = []; // 通知後に削除するアイテム(ユーザごと)
+$record_timestamp = []; // 通知後に時刻を記録するアイテム(ユーザごと)
 foreach (recent_todos($db, RECENT_MINUTES) as $index => [$user, $list]) {
     debug('user with todos', $user);
     debug('number of items', count($list));
@@ -43,24 +44,33 @@ foreach (recent_todos($db, RECENT_MINUTES) as $index => [$user, $list]) {
     $to_remove = array_filter($list, function ($todo) {
         return ! $todo->everyday;
     });
+    // 時刻を記録するアイテム
+    $to_record_timestamp = array_filter($list, function ($todo) {
+        return $todo->everyday;
+    });
 
-    // 通知の送信に成功したら削除対象を登録
+    // 通知の送信に成功したら削除対象・タイムスタンプ記録対象を登録
     try {
         debug('push', $text);
         push($user, $text);
         $remove[$user] = $to_remove;
+        $record_timestamp[$user] = $to_record_timestamp;
     } catch (Exception $e) {
         debug('exception', $e->getMessage());
     }
 }
 
-// 不要になったアイテムを削除する
-if (!empty($remove)) {
-    with_lock(LOCK_FILE, function () use ($remove) {
+// 不要になったアイテムを削除する・タイムスタンプを記録する
+if (!empty($remove) || !empty($record_timestamp)) {
+    with_lock(LOCK_FILE, function () use ($remove, $record_timestamp) {
         $db = load_db();
         foreach ($remove as $user => $list) {
-            debug('remove items', $user . "\n" . count($list));
+            debug('remove items', $user . "\t" . count($list));
             remove_todos($db, $user, $list);
+        }
+        foreach ($record_timestamp as $user => $list) {
+            debug('update last_notified', $user . "\t" . count($list));
+            update_todos_last_notified($db, $user, $list);
         }
         save_db($db);
     });

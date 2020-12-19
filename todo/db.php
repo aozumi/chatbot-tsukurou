@@ -40,6 +40,23 @@ function add_todo(object $db, string $user, int $hour, int $minute, string $titl
     $db->{$user}[] = $item;
 }
 
+/**
+ * $todosに含まれるアイテムのlast_notifiedに現在時刻のunix timeを記録する。
+ */
+function update_todos_last_notified(object $db, string $user, array $todos)
+{
+    $timestamp = time();
+    if (!isset($db->{$user})) {
+        return;
+    }
+    foreach ($db->{$user} as $todo) {
+        if (in_array($todo, $todos)) {
+            // $todo は object (JSONをデシリアライズするとそうなる)
+            $todo->last_notified = $timestamp;
+        }
+    }
+}
+
 function remove_todos(object $db, string $user, array $todos)
 {
     prepare_user($db, $user);
