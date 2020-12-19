@@ -18,7 +18,18 @@ function load_db()
 
 function save_db(object $db)
 {
-    save_json(DB_FILE, $db);
+    $tmpfile = tempnam(dirname(DB_FILE), 'todo.json.');
+    debug('save_db:tmpfile', $tmpfile);
+    try {
+        save_json($tmpfile, $db);
+        chmod($tmpfile, 0644);
+        rename($tmpfile, DB_FILE);
+    } catch (Exception $e) {
+        debug('save error', $e->getMessage());
+        if (is_file($tmpfile)) {
+            unlink($tmpfile);
+        }
+    }
 }
 
 function prepare_user(object $db, string $user)
